@@ -1,22 +1,31 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
 from .models import *
 
+
 def index(request):
-    future = FutureModel.objects.all()
-    future_img = FutureImage.objects.all()
-    service = ServiceModel.objects.all()
-    team = TeamModel.objects.all()
+    about = AboutModel2.objects.all()
+    hodim = HodimModel.objects.all()
     portfolio = Portfolio.objects.all()
     image_portfolio = ImagePortfolio.objects.all()
+    faq = FAQModel.objects.all()
+
+    if request.method == "POST":
+        contact = ContactModel(
+            name=request.POST['name'],
+            email_address=request.POST['email'],
+            subject=request.POST['subject'],
+            message=request.POST['message'],
+        )
+        contact.save()
+
+        return redirect('home_page')
 
     context = {
-        "future": future,
-        'future_img': future_img,
-        'service': service,
-        'team': team,
+        'hodim': hodim,
         'portfolio': portfolio,
-        'image_portfolio': image_portfolio
-
+        'image_portfolio': image_portfolio,
+        'about': about,
+        'faq': faq,
     }
     return render(request, 'index.html', context)
-
